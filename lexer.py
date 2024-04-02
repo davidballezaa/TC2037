@@ -2,7 +2,7 @@ import sys
 import os
 
 NUM_ESPACIOS = 40
-SYMBOLS = {
+SIMBOLOS = {
     "=": "Asignación",
     "+": "Suma",
     "-": "Resta",
@@ -13,94 +13,78 @@ SYMBOLS = {
     ")": "Paréntesis que cierra"
 }
 
-def output(word: str, result: str, outputFile):
-    """Writes the analyzed token and its classification to the output file."""
-    word = word.strip()  # Clean whitespace around the token
-    if word not in [" ", "\n", "\t", ""] and len(word) > 0:
-        outputFile.write(f"{word.ljust(NUM_ESPACIOS)}{result}\n")
+def salida(palabra: str, resultado: str, archivo_salida):
+    palabra = palabra.strip()  # Limpiar espacios en blanco alrededor del token
+    if palabra not in [" ", "\n", "\t", ""] and len(palabra) > 0:
+        archivo_salida.write(f"{palabra.ljust(NUM_ESPACIOS)}{resultado}\n")
 
-def processLine(line, outputFile):
-    """Analyzes each line and classifies each token according to the defined lexical rules."""
-    state = 0  # Initial state
-    buffer = ""  # Accumulates characters for the current token
-    index = 0  # Current position in the line
-    length = len(line)  # Total length of the line
+def procesarLinea(linea, archivo_salida):
+    estado = 0  # Estado inicial
+    buffer = ""  # Acumula caracteres para el token actual
+    indice = 0  # Posición actual en la línea
+    longitud = len(linea)  # Longitud total de la línea
 
-    while index < length:
-        char = line[index]  # Current character
+    while indice < longitud:
+        caracter = linea[indice]  # Carácter actual
 
-        if char == "/" and index + 1 < length and line[index+1] == "/":  # Start of a comment
-            buffer += line[index:].strip()  # Take everything to the end as a comment
-            output(buffer, "Comentario", outputFile)
-            break  # No need to check the rest of the line
-        elif state == 0:  # Initial state, looking for the start of a token
-            if char.isalpha():  # Start of a variable
-                buffer = char
-                state = 1  # Variable state
-            elif char.isdigit() or (char == "-" and index + 1 < length and (line[index+1].isdigit() or line[index+1] == '.')):  # Start of a number, possibly negative
-                buffer = char
-                state = 2  # Number state
-            elif char in SYMBOLS:  # Symbol
-                if buffer:  # If there's something in the buffer, output it
-                    output(buffer, "Error", outputFile)
+        if caracter == "/" and indice + 1 < longitud and linea[indice+1] == "/":  # Inicio de un comentario
+            buffer += linea[indice:].strip()  # Tomar todo hasta el final como un comentario
+            salida(buffer, "Comentario", archivo_salida)
+            break  # No es necesario revisar el resto de la línea
+        elif estado == 0:  # Estado inicial, buscando el inicio de un token
+            if caracter.isalpha():  # Inicio de una variable
+                buffer = caracter
+                estado = 1  # Estado de variable
+            elif caracter.isdigit() or (caracter == "-" and indice + 1 < longitud and (linea[indice+1].isdigit() or linea[indice+1] == '.')):  # Inicio de un número, posiblemente negativo
+                buffer = caracter
+                estado = 2  # Estado de número
+            elif caracter in SIMBOLOS:  # Símbolo
+                if buffer:  # Si hay algo en el buffer, sacarlo
+                    salida(buffer, "Error", archivo_salida)
                     buffer = ""
-                output(char, SYMBOLS[char], outputFile)
-            elif not char.isspace():  # Any other character not whitespace
-                buffer = char
-                state = 6  # Error state
-        else:  # Token processing states
-            if char.isspace() or char in SYMBOLS or index == length - 1:  # Token delimiters
-                if buffer.endswith('E') or buffer.endswith('e'):  # Exponential notation
-                    if index + 1 < length and (line[index+1] == '-' or line[index+1].isdigit()):
-                        buffer += char  # Include 'E' or 'e' in the buffer
-                        index += 1
+                salida(caracter, SIMBOLOS[caracter], archivo_salida)
+            elif not caracter.isspace():  # Cualquier otro carácter que no sea espacio en blanco
+                buffer = caracter
+                estado = 6  # Estado de error
+        else:  # Estados de procesamiento de tokens
+            if caracter.isspace() or caracter in SIMBOLOS or indice == longitud - 1:  # Delimitadores de tokens
+                if buffer.endswith('E') or buffer.endswith('e'):  # Notación exponencial
+                    if indice + 1 < longitud and (linea[indice+1] == '-' or linea[indice+1].isdigit()):
+                        buffer += caracter  # Incluir 'E' o 'e' en el buffer
+                        indice += 1
                         continue
-                if state == 2 and ('E' in buffer or 'e' in buffer or '.' in buffer or buffer.startswith('-')):  # Check for real number
-                    token_type = "Real"
-                elif state == 2:  # Integer
-                    token_type = "Entero"
-                elif state == 1:  # Variable
-                    token_type = "Variable"
+                if estado == 2 and ('E' in buffer or 'e' in buffer or '.' in buffer or buffer.startswith('-')):  # Verificar si es número real
+                    tipo_token = "Real"
+                elif estado == 2:  # Entero
+                    tipo_token = "Entero"
+                elif estado == 1:  # Variable
+                    tipo_token = "Variable"
                 else:
-                    token_type = "Error"
+                    tipo_token = "Error"
                 
-                if index == length - 1 and not char.isspace() and not char in SYMBOLS:  # Add last character if it's part of the token
-                    buffer += char
-                output(buffer, token_type, outputFile)
+                if indice == longitud - 1 and not caracter.isspace() and not caracter in SIMBOLOS:  # Agregar último carácter si es parte del token
+                    buffer += caracter
+                salida(buffer, tipo_token, archivo_salida)
                 buffer = ""
-                state = 0  # Reset to initial state
+                estado = 0  # Reiniciar al estado inicial
                 
-                if char in SYMBOLS and char != '/':  # If the current char is a symbol, output it immediately
-                    output(char, SYMBOLS[char], outputFile)
+                if caracter in SIMBOLOS and caracter != '/':  # Si el carácter actual es un símbolo, sacarlo inmediatamente
+                    salida(caracter, SIMBOLOS[caracter], archivo_salida)
             else:
-                buffer += char  # Continue building the token
+                buffer += caracter  # Continuar construyendo el token
 
-        index += 1  # Move to the next character
+        indice += 1  # Mover al siguiente carácter
 
-def lexerAritmetico(nombre_archivo):
-    """Main function to read the file and analyze each line."""
+def lexerAritmetico(archivo):
     try:
-        with open(nombre_archivo, 'r') as inputFile, open("output.txt", 'w', encoding='utf-8') as outputFile:
-            # Write the header
-            outputFile.write("Token".ljust(NUM_ESPACIOS) + "Tipo\n")
-            for line in inputFile:
-                processLine(line, outputFile)
+        with open(archivo, 'r') as archivo_entrada, open("salida.txt", 'w', encoding='utf-8') as archivo_salida:
+            # Escribir el encabezado
+            archivo_salida.write("Token".ljust(NUM_ESPACIOS) + "Tipo\n")
+            for linea in archivo_entrada:
+                procesarLinea(linea, archivo_salida)
     except FileNotFoundError:
-        print(f'ERROR: El archivo "{nombre_archivo}" no se ha encontrado.')
+        print(f'ERROR: El archivo "{archivo}" no se ha encontrado.')
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("USO: python script.py [ARCHIVO_CON_EXPRESIONES.txt]")
-        sys.exit()
-
     archivo = sys.argv[1]
-
-    if not archivo.endswith(".txt"):
-        print("Debes proveer un archivo .txt")
-        sys.exit()
-
-    if not os.path.isfile(archivo):
-        print("Este archivo no se encuentra en el directorio actual")
-        sys.exit()
-
     lexerAritmetico(archivo)
