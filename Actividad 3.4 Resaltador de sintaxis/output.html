@@ -1,0 +1,16 @@
+<html><head><style>.RESERVED_WORD {color: red;}.IDENTIFIER {color: blue;}.OPERATOR {color: purple;}.DELIMITER {color: orange;}.NUMBER {color: green;}.STRING {color: brown;}.COMMENT {color: gray;}</style></head><body><h2>Token Colors</h2><ul><li><span class="RESERVED_WORD">RESERVED_WORD</span>: color: red;</li><li><span class="IDENTIFIER">IDENTIFIER</span>: color: blue;</li><li><span class="OPERATOR">OPERATOR</span>: color: purple;</li><li><span class="DELIMITER">DELIMITER</span>: color: orange;</li><li><span class="NUMBER">NUMBER</span>: color: green;</li><li><span class="STRING">STRING</span>: color: brown;</li><li><span class="COMMENT">COMMENT</span>: color: gray;</li></ul><hr><pre><span class="IDENTIFIER">b</span><span class="OPERATOR">=</span><span class="NUMBER">7</span>
+<span class="IDENTIFIER">a</span> <span class="OPERATOR">=</span> <span class="NUMBER">32.4</span> <span class="OPERATOR">*</span><span class="DELIMITER">(</span><span class="NUMBER">8.6</span> <span class="OPERATOR">-</span> <span class="IDENTIFIER">b</span><span class="DELIMITER">)</span><span class="OPERATOR">/</span><span class="NUMBER">6.1E-8</span>
+<span class="IDENTIFIER">d</span> <span class="OPERATOR">=</span> <span class="IDENTIFIER">a</span> <span class="OPERATOR">^</span> <span class="IDENTIFIER">b</span> <span class="COMMENT"># Esto es un comentario</span>
+<span class="IDENTIFIER">f</span> <span class="OPERATOR">=</span> <span class="STRING">"hola"</span>
+<span class="IDENTIFIER">code</span> <span class="OPERATOR">=</span> <span class="RESERVED_WORD">True</span>
+
+<span class="RESERVED_WORD">def</span> <span class="IDENTIFIER">show_variables</span><span class="DELIMITER">:</span>
+    <span class="IDENTIFIER">print</span><span class="DELIMITER">(</span><span class="STRING">"b"</span><span class="DELIMITER">,</span> <span class="IDENTIFIER">b</span><span class="DELIMITER">)</span>
+    <span class="IDENTIFIER">print</span><span class="DELIMITER">(</span><span class="STRING">"a"</span><span class="DELIMITER">,</span> <span class="IDENTIFIER">a</span><span class="DELIMITER">)</span>
+    <span class="IDENTIFIER">print</span><span class="DELIMITER">(</span><span class="STRING">"d"</span><span class="DELIMITER">,</span> <span class="IDENTIFIER">d</span><span class="DELIMITER">)</span>
+    <span class="IDENTIFIER">print</span><span class="DELIMITER">(</span><span class="STRING">"f"</span><span class="DELIMITER">,</span> <span class="IDENTIFIER">f</span><span class="DELIMITER">)</span>
+
+<span class="RESERVED_WORD">if</span> <span class="IDENTIFIER">code</span><span class="DELIMITER">:</span>
+    <span class="IDENTIFIER">show_variables</span><span class="DELIMITER">(</span><span class="DELIMITER">)</span>
+
+</pre></body></html>

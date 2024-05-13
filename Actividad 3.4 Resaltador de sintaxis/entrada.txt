@@ -1,0 +1,14 @@
+b=7
+a = 32.4 *(8.6 - b)/6.1E-8
+d = a ^ b # Esto es un comentario
+f = "hola"
+code = True
+
+def show_variables:
+    print("b", b)
+    print("a", a)
+    print("d", d)
+    print("f", f)
+
+if code:
+    show_variables()
